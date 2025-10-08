@@ -1,3 +1,5 @@
+
+
 """
 High School Management System API
 
@@ -66,6 +68,7 @@ activities = {
         "participants": ["ella@mergington.edu", "jack@mergington.edu"]
     },
     # Intellectual activities
+# Intellectual activities
     "Math Olympiad": {
         "description": "Prepare for math competitions and solve challenging problems",
         "schedule": "Fridays, 4:00 PM - 5:30 PM",
@@ -79,6 +82,19 @@ activities = {
         "participants": ["charlotte@mergington.edu", "henry@mergington.edu"]
     }
 }
+
+
+# Unregister endpoint (must be after app definition and activities)
+@app.post("/activities/{activity_name}/unregister")
+def unregister_from_activity(activity_name: str, email: str):
+    """Remove a student from an activity"""
+    if activity_name not in activities:
+        raise HTTPException(status_code=404, detail="Activity not found")
+    activity = activities[activity_name]
+    if email not in activity["participants"]:
+        raise HTTPException(status_code=400, detail="Student is not registered for this activity")
+    activity["participants"].remove(email)
+    return {"message": f"Removed {email} from {activity_name}"}
 
 
 @app.get("/")
